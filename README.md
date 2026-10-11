@@ -22,7 +22,11 @@ Connect equipment labels to unit inventory, repair requests, approval decisions,
 | Phone walkthrough | [Figma demo](https://www.figma.com/proto/XIPVueJM82EDvWHDhD8oIr/Repair-Thread-Mobile?node-id=2-12&starting-point-node-id=2%3A12&scaling=scale-down) |
 | Requirements and brand | [PRD](docs/PRD.md) · [Identity](docs/BRAND.md) · [Web brand](docs/WEB-BRAND.md) |
 
-Figma simulates a fixed sample flow without camera access or real storage. The website animation is illustrative; the separate scanner performs actual OCR. Deck pricing and projections are proposals, not measured revenue. The AI assistant is a future roadmap item.
+Figma simulates a fixed sample flow without camera access or real storage. The website animation is illustrative; the separate scanner performs actual OCR. Deck pricing and projections are proposals, not measured revenue. Ask Repair Thread is implemented; live AI answers require a configured server and available API credit. See [assistant setup and limitations](docs/ASSISTANT.md).
+
+## Ask Repair Thread
+
+Open **Ask Repair Thread** from the sidebar or Overview. The attention list works locally without AI. Questions and follow-up drafts use OpenAI after explicit data-sharing consent. The selected project currently needs API credit; the public website also needs server credentials before live answers work. [Configuration and privacy details](docs/ASSISTANT.md).
 
 ## Run locally
 
@@ -62,15 +66,15 @@ For the scanner-only demo, print the sample label, display it on another screen,
 
 Records stay in **IndexedDB on the browser/device where they were created**. Desktop and browser records do not sync. Role switching simulates workflow; it is not authentication or authorization. Use one tab for edits because simultaneous changes can overwrite each other. Storage can be cleared or evicted; export important records. JSON export is available; JSON restore is not implemented.
 
-The 0.2.1 source removes untouched sample records while preserving user records, edited samples, and their related equipment/unit history. Before the first migration, the previous workspace is backed up locally under `repair-thread-v1-before-sample-cleanup`. New workspaces start empty; the synthetic OCR label remains available.
+The source removes untouched sample records while preserving user records, edited samples, and their related equipment/unit history. Before the first migration, the previous workspace is backed up locally under `repair-thread-v1-before-sample-cleanup`. New workspaces start empty; the synthetic OCR label remains available.
 
 OCR processes images locally without sending them to an AI API. Human review is required because characters can be misread; manual entry remains available.
 
-Orders are not placed by this app. Shared accounts, cloud storage, live parts catalogs, verified compatibility, payments, tenant invitations, email delivery, PMS integrations, and an AI assistant are not implemented. Before a paid rollout, add organization isolation, server-enforced permissions, durable storage, backup/restore, concurrency controls, and a tamper-resistant audit trail. See the PRD for planned scope.
+Orders are not placed by this app. Shared accounts, cloud storage, live parts catalogs, verified compatibility, payments, tenant invitations, email delivery, and PMS integrations are not implemented. Before a paid rollout, add organization isolation, server-enforced permissions, durable storage, backup/restore, concurrency controls, and a tamper-resistant audit trail. See the PRD for planned scope.
 
 ## Windows installer
 
-Source version: **0.2.1**. The website still links to the published **0.2.0 Windows installer**, which does not automatically receive source updates. A 0.2.1 installer was built and launched locally but has not been published as a GitHub release.
+Source version: **0.3.0**. The website still links to the published **0.2.0 Windows installer**, which does not automatically receive source updates. The 0.3.0 assistant installer is built locally under `release/assistant-package/`; it has not been published as a GitHub release. Installed copies do not receive this update automatically.
 
 - [Public Windows release, notes and checksum](https://github.com/AverageCC/repair-thread/releases/tag/v0.2.0).
 - Windows 10/11 x64. The installer is unsigned and may display an unknown-publisher warning.
@@ -100,3 +104,5 @@ GitHub `main` is connected to [Vercel](https://repair-thread.vercel.app/). Verce
 ## Asset and dependency notes
 
 The custom mark and SVGs are editable assets intended for this software; they do not establish trademark clearance. No open-source license has been selected: a public repository alone does not grant a general reuse license. Dependencies retain their own licenses. System fonts are not redistributed; Lucide icons use the ISC license. Sample identifiers and records are fictitious.
+
+

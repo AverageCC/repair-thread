@@ -8,10 +8,15 @@ app.setName('Repair Thread');
 if(!app.requestSingleInstanceLock()){app.quit()}else{
 app.on('second-instance',()=>{if(win){if(win.isMinimized())win.restore();win.focus()}});
 app.whenReady().then(async()=>{
+  // Development reads the approved ignored file; packaged apps never bundle credentials.
+  if(!app.isPackaged){try{process.loadEnvFile(path.join(app.getAppPath(),'.env.local'))}catch{}}
+  const {nodeAssistant}=await import('../server/node-handler.mjs');
   const root=path.join(app.getAppPath(),'dist');
   const mime={'.html':'text/html','.js':'text/javascript','.css':'text/css','.svg':'image/svg+xml','.png':'image/png','.jpg':'image/jpeg','.wasm':'application/wasm','.gz':'application/gzip','.md':'text/plain','.json':'application/json'};
   server=http.createServer((req,res)=>{
-    if(req.headers.host!==`127.0.0.1:${PORT}`||!['GET','HEAD'].includes(req.method)){res.writeHead(403);return res.end()}
+    if(req.headers.host!==`127.0.0.1:${PORT}`){res.writeHead(403);return res.end()}
+    if(req.url==='/api/assistant'){nodeAssistant(req,res);return}
+    if(!['GET','HEAD'].includes(req.method)){res.writeHead(405);return res.end()}
     let pathname;try{pathname=decodeURIComponent(new URL(req.url,origin).pathname)}catch{res.writeHead(400);return res.end()}
     const target=path.resolve(root,'.'+(pathname==='/'||pathname==='/app'?'/index.html':pathname));
     if(!target.startsWith(root+path.sep)){res.writeHead(403);return res.end()}

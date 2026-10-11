@@ -1,6 +1,6 @@
 {
   "name": "repair-thread",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "private": true,
   "type": "module",
   "scripts": {
@@ -41,7 +41,9 @@
     "files": [
       "dist/**/*",
       "desktop/**/*",
-      "package.json"
+      "package.json",
+      "server/**/*",
+      "src/assistant-data.js"
     ],
     "asar": true,
     "npmRebuild": false,

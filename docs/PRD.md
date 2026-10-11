@@ -304,3 +304,7 @@ Repair Thread is the selected product name. The first delivered release is a bro
 
 ## v0.2.0 desktop extension — October 11, 2026
 A Windows x64 installer and public download landing page extend the prototype. Live camera preview, camera selection, still capture and local OCR are implemented. The desktop bundles the OCR model for offline use. This release retains browser-local/desktop-local persistence and simulated roles; it does not add shared accounts or production tenancy.
+
+## Implemented increment: Ask Repair Thread (0.3.0)
+Local attention rules and a read-only AI question panel are implemented. See [ASSISTANT.md](ASSISTANT.md) for data scope, consent, hosting, limits, and verification. This does not implement accounts, background notifications or autonomous actions. Live responses remain blocked by API credit; hosted credentials are not configured.
+
