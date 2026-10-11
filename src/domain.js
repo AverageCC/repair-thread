@@ -1,5 +1,18 @@
 export const uid = () => crypto.randomUUID();
 export const stamp = () => new Date().toISOString();
+export const emptyWorkspace = () => ({version:1,sampleCleanup:1,units:[],assets:[],cases:[]});
+// Remove only unchanged seed records. Preserve edits and every dependency of retained records.
+export function removeSampleData(db) {
+  const original=seed();
+  const unchanged=(kind,item)=>original[kind].some(s=>s.id===item.id&&JSON.stringify(s)===JSON.stringify(item));
+  const cases=db.cases.filter(c=>!unchanged('cases',c));
+  const assetIds=new Set(cases.flatMap(c=>[c.assetId,c.replacementId]).filter(Boolean));
+  for(const a of db.assets)if(!unchanged('assets',a))assetIds.add(a.id);
+  let size;do{size=assetIds.size;for(const a of db.assets)if(assetIds.has(a.id)){if(a.replaces)assetIds.add(a.replaces);if(a.replacedBy)assetIds.add(a.replacedBy)}}while(size!==assetIds.size);
+  const assets=db.assets.filter(a=>assetIds.has(a.id));
+  const units=db.units.filter(u=>!unchanged('units',u)||assets.some(a=>a.unitId===u.id));
+  return {...db,sampleCleanup:1,cases,assets,units};
+}
 export const money = n => new Intl.NumberFormat('en-US', {style:'currency',currency:'USD'}).format(n);
 export function parseLabel(text) {
   const read = re => text.match(re)?.[1]?.trim() || '';

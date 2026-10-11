@@ -30,7 +30,7 @@ app.whenReady().then(async()=>{
   win.removeMenu();
   win.webContents.setWindowOpenHandler(({url})=>{if(/^https:\/\//i.test(url))shell.openExternal(url);return {action:'deny'}});
   win.webContents.on('will-navigate',(event,url)=>{if(new URL(url).origin!==origin){event.preventDefault();if(/^https:\/\//i.test(url))shell.openExternal(url)}});
-  await win.loadURL(origin+'/app?capture=1');
+  await win.loadURL(origin+'/app');
 });
 app.on('window-all-closed',()=>app.quit());
 app.on('before-quit',()=>server?.close());

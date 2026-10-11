@@ -2,81 +2,101 @@
 
 **Property maintenance, connected.**
 
-A working, phone-friendly prototype that connects equipment labels, unit inventory, repair requests, approval decisions, and replacement history. Built for property managers who need the whole story behind “the dishwasher in 304B.”
+Connect equipment labels to unit inventory, repair requests, approval decisions, and replacement history. Give property teams the whole story behind “the dishwasher in 304B.”
+
+[Live website](https://repair-thread.vercel.app/) · [Workspace](https://repair-thread.vercel.app/app) · [Camera demo](https://repair-thread.vercel.app/#camera-demo) · [Brand guide](https://repair-thread.vercel.app/brand/guide.html)
+
+## Product and resources
+
+- Capture a label with a camera or upload a photo. Local Tesseract OCR extracts model and serial numbers for human review.
+- Organize equipment by property/unit, create repair proposals, simulate approval decisions, and preserve replacement history.
+- Use a responsive browser workspace or Windows desktop app with bundled offline OCR.
+- Explore the scroll-driven product story, live scanner, editable brand assets, and phone walkthrough.
+
+| Resource | Link |
+| --- | --- |
+| Pitch deck — 17 slides, including AI build story and scan example | [PowerPoint](docs/pitch/Repair-Thread-Pitch.pptx) · [PDF](docs/pitch/Repair-Thread-Pitch.pdf) |
+| Demo images and presenter instructions | [Demo assets](docs/demo/README.md) |
+| Sample label | [Model ABC12345 / Serial 98765432](docs/demo/05-live-ocr-test-label.png) |
+| Editable mobile design | [Figma design](https://www.figma.com/design/XIPVueJM82EDvWHDhD8oIr) |
+| Phone walkthrough | [Figma demo](https://www.figma.com/proto/XIPVueJM82EDvWHDhD8oIr/Repair-Thread-Mobile?node-id=2-12&starting-point-node-id=2%3A12&scaling=scale-down) |
+| Requirements and brand | [PRD](docs/PRD.md) · [Identity](docs/BRAND.md) · [Web brand](docs/WEB-BRAND.md) |
+
+Figma simulates a fixed sample flow without camera access or real storage. The website animation is illustrative; the separate scanner performs actual OCR. Deck pricing and projections are proposals, not measured revenue. The AI assistant is a future roadmap item.
 
 ## Run locally
 
-Use Node.js 22.12+ and pnpm 11.
+Requirements: **Node.js 22.12+** and **pnpm 11**. The package-manager version is pinned in `package.json`.
 
 ```sh
+git clone https://github.com/AverageCC/repair-thread.git
+cd repair-thread
 pnpm install
 pnpm dev
-pnpm test
-pnpm build
 ```
 
-Open the localhost URL printed by Vite. No API keys or environment variables are required. Vercel uses the included build settings and serves `dist`.
+Open the localhost URL printed by Vite. No API keys or environment variables are required. Camera access needs HTTPS or localhost and your permission.
 
-## Try the complete workflow
+```sh
+pnpm test       # workflow and sample-cleanup tests
+pnpm build      # production website in dist/
+pnpm preview    # preview the production build
+pnpm desktop    # build and launch Electron
+pnpm dist:win   # Windows x64 installer in release/
+```
 
-1. Open **Properties & units** and find **304B**. Each asset has its own model, serial, and evidence.
-2. Choose **Scan equipment**. Upload a clear label photo or use the synthetic demo label. Real Tesseract OCR runs in your browser; correct the extracted fields and confirm review before saving.
-3. Report an issue against an asset. The thread retains the unit and equipment context.
-4. As **Coordinator**, create a repair or replacement proposal with an itemized estimate.
-5. Switch to the **Approver demo role**. Approve, reject, or request changes. A revision requires a new decision and keeps the old proposal.
-6. As Coordinator, record the external fulfillment reference. Complete the repair or capture replacement equipment. The original asset remains in history and exports.
-7. Refresh to verify local persistence. Export inventory CSV or a JSON snapshot from the workspace controls.
+`pnpm prepare:ocr` copies installed OCR assets into `public/ocr` before dev/build. Generated assets, dependencies, builds, and installer binaries are excluded from source control.
 
-## What works
+## Try the workflow
 
-- Property/unit search and new unit creation; equipment records tied to units.
-- Image upload, on-device OCR, raw extraction evidence, human correction and review.
-- Repair requests, proposal revisions, itemized estimates, exact-version decisions.
-- External supplier links and fulfillment notes; replacement lineage and audit timeline.
-- Browser persistence, CSV export, JSON snapshot, record printing, responsive layouts.
-- Custom SVG identity, CSS design tokens, and a downloadable web brand guide.
+1. Add a property and unit, such as **Maple Court / 304B**. New workspaces start empty.
+2. Choose **Scan equipment**, capture/upload a label or use the synthetic sample, review the identifiers, and save equipment to the unit.
+3. Report an issue. As Coordinator, create an itemized repair or replacement proposal.
+4. Switch to the Approver role to simulate a decision. Revised proposals require a new decision and retain earlier versions.
+5. Record an external fulfillment reference, complete the repair, or capture replacement equipment. Previous equipment remains in history.
+6. Refresh to check persistence; export inventory CSV or a JSON snapshot.
 
-## Prototype boundaries
+For the scanner-only demo, print the sample label, display it on another screen, or download it for image upload. Expected results: **model ABC12345**, **serial 98765432**. This is text recognition, not barcode lookup. The landing-page scanner displays captured fields without saving equipment; use the workspace to save records.
 
-This is a **single-browser demonstration, not a production multi-tenant service**. Each visitor has separate IndexedDB data. Role switching simulates the workflow and is **not authentication or authorization**. Use one tab for edits; simultaneous tab changes can overwrite each other. Browser data can be cleared or evicted. Export a snapshot before resetting; JSON restore is not implemented.
+## Data and current capabilities
 
-OCR processes the image locally. The web app loads bundled OCR files from its own host. The installed desktop app includes the worker, WASM engines and English model and can analyze labels offline. No image is sent to an AI API. OCR can misread characters; a human must confirm the label. Manual entry remains available. The sample label is synthetic.
+Records stay in **IndexedDB on the browser/device where they were created**. Desktop and browser records do not sync. Role switching simulates workflow; it is not authentication or authorization. Use one tab for edits because simultaneous changes can overwrite each other. Storage can be cleared or evicted; export important records. JSON export is available; JSON restore is not implemented.
 
-Orders are **not placed** by this app. There is no live parts catalog, verified compatibility, automatic diagnosis, payment collection, tenant invitation, email delivery, PMS integration, or shared cloud database. There is no trademark clearance implied by this repository. Sample people, properties, quotes and identifiers are fictitious demonstration data.
+The 0.2.1 source removes untouched sample records while preserving user records, edited samples, and their related equipment/unit history. Before the first migration, the previous workspace is backed up locally under `repair-thread-v1-before-sample-cleanup`. New workspaces start empty; the synthetic OCR label remains available.
 
-## Project map
+OCR processes images locally without sending them to an AI API. Human review is required because characters can be misread; manual entry remains available.
+
+Orders are not placed by this app. Shared accounts, cloud storage, live parts catalogs, verified compatibility, payments, tenant invitations, email delivery, PMS integrations, and an AI assistant are not implemented. Before a paid rollout, add organization isolation, server-enforced permissions, durable storage, backup/restore, concurrency controls, and a tamper-resistant audit trail. See the PRD for planned scope.
+
+## Windows installer
+
+Source version: **0.2.1**. The website still links to the published **0.2.0 Windows installer**, which does not automatically receive source updates. A 0.2.1 installer was built and launched locally but has not been published as a GitHub release.
+
+- [Public Windows release, notes and checksum](https://github.com/AverageCC/repair-thread/releases/tag/v0.2.0).
+- Windows 10/11 x64. The installer is unsigned and may display an unknown-publisher warning.
+- Installation offers a destination folder, Start menu entry, desktop shortcut, and uninstaller. Uninstall retains the local profile.
+- Bundled files are served only on `127.0.0.1:47831`; port conflicts produce a startup error.
+- Electron uses sandboxing and context isolation with Node integration disabled. Camera access is video-only and restricted to the local app origin.
+- If access is denied, check Windows camera privacy and browser/site settings. Image upload remains available.
+
+## Repository map
 
 | Path | Purpose |
 | --- | --- |
-| `src/main.jsx` | Application views and browser workflows |
-| `src/domain.js` | Proposal, approval, replacement, export rules |
-| `src/style.css` | Responsive product design |
-| `tests/domain.test.js` | Workflow invariant tests |
-| `public/brand/guide.html` | Standalone brand kit and downloadable assets |
-| `public/brand/tokens.css` | Reusable software design tokens |
-| `docs/PRD.md` | Product requirements and release boundaries |
-| `docs/BRAND.md` | Identity rules and asset usage |
+| `src/Landing.jsx`, `src/landing.css` | Marketing website |
+| `src/ProductSequence.jsx` | Scroll-driven animation |
+| `src/LandingScanner.jsx`, `src/CameraCapture.jsx` | Camera and image capture |
+| `src/main.jsx`, `src/domain.js` | Workspace, rules, exports and sample cleanup |
+| `desktop/` | Electron shell and icon |
+| `tests/` | Workflow and sample-data preservation tests |
+| `public/brand/` | Brand guide, SVGs and design tokens |
+| `docs/` | PRD, brand guidance, pitch deck and demo assets |
+| `vercel.json` | Deployment build and routing settings |
 
-## Before a paid pilot
+## Deployment
 
-Implement server authentication, tenant isolation, server-enforced roles, durable database/object storage, signed resident links, backup/restore, concurrency control and a tamper-resistant audit log. Test those controls with two independent organizations. Add verified supplier references and PMS integration only after validating the workflow with real managers. See the PRD for acceptance criteria; prototype simulation does not satisfy production requirements.
+GitHub `main` is connected to [Vercel](https://repair-thread.vercel.app/). Vercel builds the source and serves `dist`; confirm deployment status after each push. Website deployment does not rebuild or publish the Windows installer.
 
 ## Asset and dependency notes
 
-The custom Repair Thread mark and SVG assets are editable source assets intended for this software. Brand assets do not establish trademark rights. No open-source license has been selected for this project; publishing source does not grant a general reuse license. Third-party libraries retain their own licenses. The UI uses installed system fonts and does not redistribute font files. Lucide icons are provided by `lucide-react` under its ISC license.
-
-## Desktop and live camera (v0.2.0)
-
-- Visit `/` for the landing page and Windows download; `/app` opens the workspace.
-- Visit `/app?capture=1` to open camera capture directly. Choose **Use live camera**, allow camera access, frame the label, then choose **Capture label & analyze**. Stop/close ends the camera tracks. Audio is never requested.
-- The Windows installer is for Windows 10/11 x64. It is unsigned; verify the SHA-256 checksum on the GitHub release. No signing certificate is included.
-- Desktop data stays in Electron's local app profile and is separate from browser data. The app serves its bundled files only on `127.0.0.1:47831`; it does not expose a LAN server. Port conflicts produce a startup error rather than switching to a different data origin.
-- The installer offers a destination folder, Start menu entry, desktop shortcut and uninstaller. Uninstall retains the local profile; export records before removing local data manually.
-- If camera permission is denied, use Windows camera privacy settings or browser site settings, then retry. If no camera is connected, image upload and synthetic label OCR still work.
-
-```sh
-pnpm desktop   # build and launch local desktop app
-pnpm dist:win  # Windows NSIS installer in release/
-```
-
-`pnpm prepare:ocr` copies pinned package assets into `public/ocr` before dev/build; generated OCR files and release binaries are not checked into source. Electron runs with a sandbox, context isolation and Node integration disabled. Camera access is limited to the local app origin and video; external pages open in the system browser.
+The custom mark and SVGs are editable assets intended for this software; they do not establish trademark clearance. No open-source license has been selected: a public repository alone does not grant a general reuse license. Dependencies retain their own licenses. System fonts are not redistributed; Lucide icons use the ISC license. Sample identifiers and records are fictitious.

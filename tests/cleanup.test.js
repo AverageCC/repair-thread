@@ -1,0 +1,7 @@
+import {test} from 'node:test';
+import assert from 'node:assert/strict';
+import {seed,removeSampleData,emptyWorkspace,decide,replaceAsset} from '../src/domain.js';
+test('untouched sample portfolio is removed without mutating the original',()=>{const db=seed();assert.deepEqual(removeSampleData(db),emptyWorkspace());assert.equal(db.assets.length,5)});
+test('user captures and their unit are retained',()=>{const db=seed();db.assets.push({...db.assets[0],id:'user-capture',serial:'REAL-123'});const clean=removeSampleData(db);assert.deepEqual(clean.assets.map(a=>a.id),['user-capture']);assert.deepEqual(clean.units.map(u=>u.id),['u1']);assert.equal(clean.cases.length,0)});
+test('changed sample request preserves its equipment and location',()=>{const db=seed();db.cases[0].description='My updated description';const clean=removeSampleData(db);assert.equal(clean.cases[0].description,'My updated description');assert.deepEqual(clean.assets.map(a=>a.id),['a1']);assert.deepEqual(clean.units.map(u=>u.id),['u1'])});
+test('replacement lineage remains intact and cleanup is idempotent',()=>{const db=seed();db.cases[0]=decide(db.cases[0],'Approved','Approver');const replaced=replaceAsset(db,'c1',{brand:'GE',model:'USER-MODEL',serial:'USER-SERIAL'});const clean=removeSampleData(replaced);assert.equal(clean.assets.length,2);assert.equal(clean.assets[0].replacedBy,clean.assets[1].id);assert.deepEqual(removeSampleData(clean),clean)});
