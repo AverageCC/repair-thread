@@ -1,26 +1,64 @@
 {
   "name": "repair-thread",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vite --host 127.0.0.1",
-    "build": "vite build",
+    "dev": "pnpm prepare:ocr && vite --host 127.0.0.1",
+    "build": "pnpm prepare:ocr && vite build",
     "preview": "vite preview --host 127.0.0.1",
-    "test": "node --test tests/*.test.js"
+    "test": "node --test tests/*.test.js",
+    "prepare:ocr": "node scripts/prepare-ocr.mjs",
+    "desktop": "pnpm build && electron .",
+    "dist:win": "pnpm build && electron-builder --win nsis --x64 --publish never"
   },
   "dependencies": {
+    "@tesseract.js-data/eng": "^1.0.0",
+    "idb-keyval": "6.2.2",
+    "lucide-react": "0.468.0",
     "react": "19.2.0",
     "react-dom": "19.2.0",
-    "lucide-react": "0.468.0",
-    "idb-keyval": "6.2.2",
     "tesseract.js": "6.0.1"
   },
   "devDependencies": {
+    "electron": "^44.7.0",
+    "electron-builder": "^26.15.3",
     "vite": "7.1.12"
   },
   "packageManager": "pnpm@11.25.0",
   "engines": {
     "node": ">=22.12.0"
+  },
+  "description": "Local camera capture and connected property maintenance records",
+  "author": "Repair Thread",
+  "main": "desktop/main.cjs",
+  "build": {
+    "appId": "com.repairthread.desktop",
+    "productName": "Repair Thread",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "dist/**/*",
+      "desktop/**/*",
+      "package.json"
+    ],
+    "asar": true,
+    "npmRebuild": false,
+    "win": {
+      "target": "nsis",
+      "icon": "desktop/icon.ico",
+      "signExecutable": false
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "runAfterFinish": true,
+      "artifactName": "Repair-Thread-Setup-${version}.exe",
+      "deleteAppDataOnUninstall": false
+    }
   }
 }

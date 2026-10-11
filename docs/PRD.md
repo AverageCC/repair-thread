@@ -301,3 +301,6 @@ Repair Thread is the selected product name. The first delivered release is a bro
 **Prototype acceptance:** a user can scan a synthetic or uploaded label, correct and save it to a unit, create a request, submit a proposal, switch demo role to approve, record completion/replacement and see the same record after a refresh in the same browser. Tests must protect approval version binding, negative-cost validation, replacement lineage and CSV escaping.
 
 **Paid-pilot gate:** implement and test server identity, authorization, organization isolation, durable records and backup/restore before storing real tenant or customer data. Pricing and savings remain validation hypotheses.
+
+## v0.2.0 desktop extension — October 11, 2026
+A Windows x64 installer and public download landing page extend the prototype. Live camera preview, camera selection, still capture and local OCR are implemented. The desktop bundles the OCR model for offline use. This release retains browser-local/desktop-local persistence and simulated roles; it does not add shared accounts or production tenancy.
